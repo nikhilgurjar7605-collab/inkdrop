@@ -18,6 +18,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "INKDROP - Premium Manga Reader",
   description: "A premium, human-designed manga reading platform powered by MangaDex.",
+  referrer: 'no-referrer',
 };
 
 export default function RootLayout({
