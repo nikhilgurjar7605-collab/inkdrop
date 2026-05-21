@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base: #0A0A0A;
+  --bg-surface: #111111;
+  --bg-elevated: #1A1A1A;
+  --bg-hover: #222222;
+  
+  --border: #2A2A2A;
+  --border-subtle: #1E1E1E;
+  
+  --text-primary: #F0EDE8;
+  --text-secondary: #8A8680;
+  --text-muted: #4A4845;
+  
+  --accent: #F5A623;
+  --accent-hover: #E09520;
+  --accent-muted: rgba(245, 166, 35, 0.12);
+  
+  --danger: #E05555;
+  --success: #4CAF7D;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-dm-sans), sans-serif;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-syne), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+}
+
+/* Skeleton animation gradient */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-elevated) 25%,
+    var(--bg-hover) 50%,
+    var(--bg-elevated) 75%
+  );
+  background-size: 1000px 100%;
+}
