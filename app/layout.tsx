@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Syne, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/providers";
@@ -28,6 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
+      </head>
       <body className={`${syne.variable} ${dmSans.variable} font-body bg-background-base text-text-primary antialiased`}>
         <Providers>
           {children}

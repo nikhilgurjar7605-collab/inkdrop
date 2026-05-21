@@ -13,6 +13,7 @@ interface AuthState {
   isAuthenticated: boolean;
   login: (email: string, password: string) => boolean;
   signup: (name: string, email: string, password: string) => boolean;
+  telegramLogin: (user: User) => void;
   loginAsGuest: () => void;
   logout: () => void;
 }
@@ -90,6 +91,13 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
         });
         return true;
+      },
+
+      telegramLogin: (user: User) => {
+        set({
+          user,
+          isAuthenticated: true,
+        });
       },
 
       loginAsGuest: () => {
