@@ -1,7 +1,8 @@
 import { MangaResponse, SingleMangaResponse, ChapterResponse, AtHomeResponse, UIManga, Manga, CoverResponse } from './types';
 import { buildCoverUrl } from './utils';
 
-const BASE_URL = 'https://api.mangadex.org';
+// Use Next.js proxy for client requests to bypass CORS, but use absolute URL for SSR
+const BASE_URL = typeof window !== 'undefined' ? '/api/mangadex' : 'https://api.mangadex.org';
 
 async function fetchWithRetry(url: string, options?: RequestInit, retries = 3): Promise<any> {
   for (let i = 0; i < retries; i++) {
