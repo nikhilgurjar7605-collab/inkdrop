@@ -70,6 +70,7 @@ export function PageReader({ chapterData }: { chapterData: any }) {
             alt={`Page ${currentPage}`} 
             className={`max-w-full max-h-full ${fitClass}`}
             loading="eager"
+            referrerPolicy="no-referrer"
           />
         </motion.div>
       </AnimatePresence>
