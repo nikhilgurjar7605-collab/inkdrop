@@ -1,10 +1,9 @@
 import React, { useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import { useReaderStore } from '@/store/readerStore';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function PageReader({ chapterData }: { chapterData: any }) {
-  const { currentPage, setPage, direction, fit } = useReaderStore();
+  const { currentPage, setPage, direction } = useReaderStore();
   const totalPages = chapterData.pages.length;
 
   const handlePrev = useCallback(() => {
@@ -46,12 +45,6 @@ export function PageReader({ chapterData }: { chapterData: any }) {
 
   const imgUrl = `${chapterData.baseUrl}/data/${chapterData.hash}/${chapterData.pages[currentPage - 1]}`;
 
-  const fitClass = {
-    width: 'w-full h-auto',
-    height: 'h-full w-auto object-contain',
-    original: 'w-auto h-auto',
-  }[fit];
-
   return (
     <div className="w-full h-full flex flex-col items-center justify-center overflow-auto" onClick={handleTap}>
       <AnimatePresence mode="wait">
@@ -61,14 +54,13 @@ export function PageReader({ chapterData }: { chapterData: any }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: isRTL ? 20 : -20 }}
           transition={{ duration: 0.15 }}
-          className="relative max-w-full max-h-full flex items-center justify-center pointer-events-none"
+          className="relative w-full max-w-[900px] flex items-center justify-center pointer-events-none"
         >
-          {/* Using img instead of next/image because MangaDex data URLs are dynamic and might not be configured in Next.js domains */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src={imgUrl} 
             alt={`Page ${currentPage}`} 
-            className={`max-w-full max-h-full ${fitClass}`}
+            className="w-full h-auto max-h-[100vh] object-contain"
             loading="eager"
             referrerPolicy="no-referrer"
           />
