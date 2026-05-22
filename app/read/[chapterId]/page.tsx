@@ -12,7 +12,7 @@ import { ScrollReader } from '@/components/reader/ScrollReader';
 import { ReaderTopBar } from '@/components/reader/ReaderTopBar';
 import { ReaderBottomBar } from '@/components/reader/ReaderBottomBar';
 import { ReaderSettings } from '@/components/reader/ReaderSettings';
-import { useMangaDetail } from '@/hooks/useManga';
+import { useMangaDetail, useMangaFeedInfinite } from '@/hooks/useManga';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings } from 'lucide-react';
 
@@ -43,6 +43,11 @@ function ReaderContent() {
   });
 
   const { data: manga } = useMangaDetail(mangaId);
+  const { data: feed } = useMangaFeedInfinite(mangaId);
+
+  const allChapters = feed?.pages.flatMap((p) => p.data) || [];
+  const currentChapterIndex = allChapters.findIndex(c => c.id === chapterId);
+  const nextChapter = currentChapterIndex >= 0 && currentChapterIndex < allChapters.length - 1 ? allChapters[currentChapterIndex + 1] : null;
 
   // Auto-hide UI
   useEffect(() => {
@@ -110,7 +115,7 @@ function ReaderContent() {
         {mode === 'page' ? (
           <PageReader chapterData={chapterData} />
         ) : (
-          <ScrollReader chapterData={chapterData} />
+          <ScrollReader chapterData={chapterData} nextChapter={nextChapter} mangaId={mangaId} />
         )}
       </div>
 

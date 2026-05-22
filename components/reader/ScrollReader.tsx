@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useReaderStore } from '@/store/readerStore';
+import { Button } from '@/components/ui/Button';
 
-export function ScrollReader({ chapterData }: { chapterData: any }) {
+export function ScrollReader({ chapterData, nextChapter, mangaId }: { chapterData: any, nextChapter?: any, mangaId?: string }) {
   const pages = chapterData.pages;
 
   return (
@@ -10,6 +12,21 @@ export function ScrollReader({ chapterData }: { chapterData: any }) {
         {pages.map((page: string, i: number) => {
           return <ScrollImage key={i} chapterData={chapterData} index={i} pageFile={page} />;
         })}
+
+        {nextChapter && mangaId && (
+          <div className="w-full py-16 flex justify-center bg-black/20 mt-4 border-t border-border-subtle/20">
+            <Button variant="primary" size="lg" className="text-black font-bold px-8 py-4 text-base" asChild>
+              <Link href={`/read/${nextChapter.id}?manga=${mangaId}&chapter=${nextChapter.attributes.chapter}`}>
+                Next Chapter (Ch. {nextChapter.attributes.chapter})
+              </Link>
+            </Button>
+          </div>
+        )}
+        {!nextChapter && pages.length > 0 && (
+          <div className="w-full py-16 flex justify-center text-text-muted mt-4 border-t border-border-subtle/20">
+            End of available chapters
+          </div>
+        )}
       </div>
     </div>
   );
