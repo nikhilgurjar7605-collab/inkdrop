@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -68,13 +68,10 @@ export default function MangaDetailPage() {
   const [newReview, setNewReview] = useState('');
   const [newRating, setNewRating] = useState(5);
   const [votes, setVotes] = useState<Record<number, 'up' | 'down' | null>>({});
+  const [selectedSection, setSelectedSection] = useState(0);
 
-  // Auto-load all chapters
-  useEffect(() => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  // Auto-load removed for performance
+  // Users will click "Load More Chapters" to load more pages
 
   React.useEffect(() => {
     if (id) setReviews(generateReviews(id));
@@ -84,6 +81,17 @@ export default function MangaDetailPage() {
   const progress = getProgress(id);
   const allChapters = feed?.pages.flatMap((p) => p.data) || [];
   const totalFromApi = feed?.pages[0]?.total || 0;
+
+  const CHAPTERS_PER_SECTION = 10;
+  const chapterChunks = useMemo(() => {
+    const chunks = [];
+    for (let i = 0; i < allChapters.length; i += CHAPTERS_PER_SECTION) {
+      chunks.push(allChapters.slice(i, i + CHAPTERS_PER_SECTION));
+    }
+    return chunks;
+  }, [allChapters]);
+
+  const currentSectionChapters = chapterChunks[selectedSection] || [];
 
   if (mangaLoading) {
     return (
@@ -193,21 +201,41 @@ export default function MangaDetailPage() {
 
           {/* ── CHAPTERS SECTION ── */}
           <div className="mt-12">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="font-heading text-2xl font-bold">
-                Chapters <span className="text-text-muted text-lg font-normal ml-1">({totalFromApi})</span>
-              </h2>
-              <span className="text-text-muted text-sm">{allChapters.length} loaded</span>
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-5 gap-4">
+              <div className="flex items-center gap-2">
+                <h2 className="font-heading text-2xl font-bold">
+                  Chapters <span className="text-text-muted text-lg font-normal ml-1">({totalFromApi})</span>
+                </h2>
+                <span className="text-text-muted text-sm">{allChapters.length} loaded</span>
+              </div>
+              
+              {chapterChunks.length > 0 && (
+                <select 
+                  className="bg-background-surface border border-border-subtle rounded px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-accent"
+                  value={selectedSection}
+                  onChange={(e) => setSelectedSection(Number(e.target.value))}
+                >
+                  {chapterChunks.map((chunk, idx) => {
+                    const firstChap = chunk[0]?.attributes?.chapter || '?';
+                    const lastChap = chunk[chunk.length - 1]?.attributes?.chapter || '?';
+                    return (
+                      <option key={idx} value={idx}>
+                        Ch. {firstChap} - {lastChap}
+                      </option>
+                    );
+                  })}
+                </select>
+              )}
             </div>
 
-            {feedLoading ? (
+            {feedLoading && allChapters.length === 0 ? (
               <div className="space-y-2">
                 {[...Array(10)].map((_, i) => <div key={i} className="h-16 rounded-md skeleton-shimmer" />)}
               </div>
             ) : (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1 rounded-lg overflow-hidden border border-border-subtle bg-background-surface divide-y divide-border-subtle">
-                  {allChapters.map((chapter) => (
+                  {currentSectionChapters.map((chapter) => (
                     <ChapterRow
                       key={chapter.id}
                       id={chapter.id}

@@ -1,10 +1,15 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useReaderStore } from '@/store/readerStore';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function PageReader({ chapterData }: { chapterData: any }) {
   const { currentPage, setPage, direction } = useReaderStore();
+  const [imgError, setImgError] = useState(false);
   const totalPages = chapterData.pages.length;
+
+  useEffect(() => {
+    setImgError(false);
+  }, [currentPage]);
 
   const handlePrev = useCallback(() => {
     if (currentPage > 1) setPage(currentPage - 1);
@@ -43,7 +48,9 @@ export function PageReader({ chapterData }: { chapterData: any }) {
     // Middle tap is handled by parent to toggle UI
   };
 
-  const imgUrl = `${chapterData.baseUrl}/data/${chapterData.hash}/${chapterData.pages[currentPage - 1]}`;
+  const isFallback = imgError && chapterData.dataSaverPages && chapterData.dataSaverPages.length > 0;
+  const pageFile = isFallback ? chapterData.dataSaverPages[currentPage - 1] : chapterData.pages[currentPage - 1];
+  const imgUrl = `${chapterData.baseUrl}/${isFallback ? 'data-saver' : 'data'}/${chapterData.hash}/${pageFile}`;
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center overflow-auto" onClick={handleTap}>
@@ -63,6 +70,7 @@ export function PageReader({ chapterData }: { chapterData: any }) {
             className="w-full h-auto max-h-[100vh] object-contain"
             loading="eager"
             referrerPolicy="no-referrer"
+            onError={() => setImgError(true)}
           />
         </motion.div>
       </AnimatePresence>

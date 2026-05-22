@@ -14,6 +14,7 @@ import { ReaderBottomBar } from '@/components/reader/ReaderBottomBar';
 import { ReaderSettings } from '@/components/reader/ReaderSettings';
 import { useMangaDetail } from '@/hooks/useManga';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Settings } from 'lucide-react';
 
 function ReaderContent() {
   const params = useParams();
@@ -22,12 +23,18 @@ function ReaderContent() {
   const mangaId = searchParams.get('manga') || '';
   const chapterNum = searchParams.get('chapter') || '?';
 
-  const { mode, background, currentPage, setPage } = useReaderStore();
+  const { mode, background, currentPage, setPage, direction } = useReaderStore();
   const { updateProgress } = useProgressStore();
   const { addToHistory } = useHistoryStore();
 
   const [showUI, setShowUI] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [showDirectionToast, setShowDirectionToast] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowDirectionToast(false), 4000);
+    return () => clearTimeout(t);
+  }, []);
 
   const { data: chapterData, isLoading } = useQuery({
     queryKey: ['chapter', chapterId],
@@ -127,6 +134,20 @@ function ReaderContent() {
       )}
 
       <ReaderSettings open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+      <AnimatePresence>
+        {showDirectionToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: -20, x: '-50%' }}
+            className="fixed top-20 left-1/2 bg-black/80 text-white px-4 py-2 rounded-full text-xs font-bold z-[55] flex items-center gap-2 shadow-lg whitespace-nowrap"
+          >
+            <Settings className="w-4 h-4" />
+            Reading Mode: {mode === 'scroll' ? 'Scroll' : direction === 'rtl' ? 'Right-to-Left (Manga)' : 'Left-to-Right (Comic)'}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

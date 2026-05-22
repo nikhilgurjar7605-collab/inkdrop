@@ -11,7 +11,7 @@ import { MangaCardSkeleton } from '@/components/ui/MangaCardSkeleton';
 export default function GenrePage() {
   const params = useParams();
   const slug = params.slug as string;
-  const genreName = slug.charAt(0).toUpperCase() + slug.slice(1);
+  const genreName = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : '';
 
   // In a real app we need to map slug to MangaDex UUID tags
   // For demo, we just search with a query or dummy filter

@@ -53,12 +53,13 @@ export async function fetchMangaFeed(id: string, offset = 0, limit = 500): Promi
   );
 }
 
-export async function fetchChapterPages(chapterId: string): Promise<{ baseUrl: string; hash: string; pages: string[] }> {
+export async function fetchChapterPages(chapterId: string): Promise<{ baseUrl: string; hash: string; pages: string[]; dataSaverPages: string[] }> {
   const data: AtHomeResponse = await fetchWithRetry(`${BASE_URL}/at-home/server/${chapterId}`);
   return {
     baseUrl: data.baseUrl,
     hash: data.chapter.hash,
-    pages: data.chapter.data
+    pages: data.chapter.data,
+    dataSaverPages: data.chapter.dataSaver
   };
 }
 
