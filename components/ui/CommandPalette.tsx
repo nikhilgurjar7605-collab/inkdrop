@@ -11,7 +11,7 @@ import Link from 'next/link';
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const debouncedQuery = useDebounce(query, 500);
+  const debouncedQuery = useDebounce(query, 3000);
 
   const { data: results, isLoading } = useSearchManga(debouncedQuery);
 

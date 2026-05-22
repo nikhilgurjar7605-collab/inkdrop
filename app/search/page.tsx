@@ -35,9 +35,7 @@ function SearchContent() {
   }, [debouncedQuery, selectedGenres, router]);
 
   const { data: results, isLoading } = useSearchManga(debouncedQuery, {
-    // Basic filter logic, MangaDex API uses UUIDs for tags, so filtering by string name is complex here.
-    // In a real app we'd fetch the tags endpoint and map UUIDs.
-    // For now, we'll fetch with query and handle client-side or assume partial implementation.
+    genres: selectedGenres,
   });
 
   const toggleGenre = (genre: string) => {
@@ -97,6 +95,10 @@ function SearchContent() {
                 Array.from({ length: 8 }).map((_, i) => <MangaCardSkeleton key={i} />)
               ) : results?.length ? (
                 results.map(manga => <MangaCard key={manga.id} manga={manga} />)
+              ) : (!debouncedQuery && selectedGenres.length === 0) ? (
+                <div className="col-span-full py-12 text-center text-text-secondary">
+                  Start typing or select a genre to search the INKDROP library...
+                </div>
               ) : (
                 <div className="col-span-full py-12 text-center text-text-secondary">
                   No manga found matching your criteria.

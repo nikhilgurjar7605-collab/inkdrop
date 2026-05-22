@@ -69,6 +69,13 @@ export default function MangaDetailPage() {
   const [newRating, setNewRating] = useState(5);
   const [votes, setVotes] = useState<Record<number, 'up' | 'down' | null>>({});
 
+  // Auto-load all chapters
+  useEffect(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   React.useEffect(() => {
     if (id) setReviews(generateReviews(id));
   }, [id]);
